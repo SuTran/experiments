@@ -83,10 +83,6 @@ APP.Main = (function() {
 
       }
     }
-
-    // Colorize on complete.
-    if (storyLoadCount === 0)
-      colorizeAndScaleStories();
   }
 
   function onStoryClick(details) {
@@ -248,47 +244,6 @@ APP.Main = (function() {
     setTimeout(animate, 4);
   }
 
-  /**
-   * Does this really add anything? Can we do this kind
-   * of work in a cheaper way?
-   */
-  function colorizeAndScaleStories() {
-
-    var storyElements = document.querySelectorAll('.story');
-
-    // Base the scale on the y position of the score.
-    var height = main.offsetHeight;
-    var mainPosition = main.getBoundingClientRect();
-    var bodyTop = document.body.getBoundingClientRect().top;
-    var firstScore = storyElements[0].querySelector('.story__score');
-    var firstStoryTop = firstScore.getBoundingClientRect().top;
-    var firstStoryWidth = firstScore.getBoundingClientRect().width;
-    var storyOffsetWidth = storyElements[0].offsetWidth;
-    // It does seem awfully broad to change all the
-    // colors every time!
-    for (var s = 0; s < storyElements.length; s++) {
-
-      var story = storyElements[s];
-      var score = story.querySelector('.story__score');
-      var title = story.querySelector('.story__title');
-
-      var scoreLocation = firstStoryTop * (s * storyOffsetWidth) -
-          bodyTop;
-      var scale = Math.min(1, 1 - (0.05 * ((scoreLocation - 170) / height)));
-      var opacity = Math.min(1, 1 - (0.5 * ((scoreLocation - 170) / height)));
-
-      score.style.width = (scale * 40) + 'px';
-      score.style.height = (scale * 40) + 'px';
-      score.style.lineHeight = (scale * 40) + 'px';
-
-      // Now figure out how wide it is and use that to saturate it.
-      var saturation = (100 * ((firstStoryWidth - 38) / 2));
-
-      score.style.backgroundColor = 'hsl(42, ' + saturation + '%, 50%)';
-      title.style.opacity = opacity;
-    }
-  }
-
   main.addEventListener('touchstart', function(evt) {
 
     // I just wanted to test what happens if touchstart
@@ -308,8 +263,6 @@ APP.Main = (function() {
     var headerTitles = header.querySelector('.header__title-wrapper');
     var scrollTopCapped = Math.min(70, scrollTop);
     var scaleString = 'scale(' + (1 - (scrollTopCapped / 300)) + ')';
-
-    colorizeAndScaleStories();
 
     header.style.height = (156 - scrollTopCapped) + 'px';
     headerTitles.style.webkitTransform = scaleString;
